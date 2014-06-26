@@ -30,6 +30,19 @@ current directory.
 If you do install globally, cd into your project to run
 `site-update`.
 
+## Usage
+
+After you've created a config file (see section below), you just need
+to run it on a zipfile containing the sources you want integrated:
+
+    path-to-project/node_modules/.bin/site-update ~/Downloads/mysite.zip
+
+You can put it in your PATH so you don't need to specify the
+folder. Or if you installed with `-g`:
+
+    cd path-to-project
+    site-update ~/Downloads/mysite.zip
+
 ## Config file
 
 The config file must be at the top-level of your project folder, and
