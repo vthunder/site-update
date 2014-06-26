@@ -107,11 +107,15 @@ Substitution Variables section below for a complete list.
 
 #### action
 
-What you want `site-update` to do. There are currently only two values:
+What you want `site-update` to do. There are two built-in possible
+values:
 
 * `copy`: copies the file as-is.
 * `transform`: parses the file as HTML and runs transform rules
   before writing out the file.
+
+However, it is possible to augment this list by supplying your own
+javascript action. See User-Defined Actions below.
 
 #### transform
 
@@ -287,6 +291,85 @@ Appends content, at the end of the element (inside it).
 #### prepend
 
 Prepends content, at the beginning of the element (inside it).
+
+## User-Defined Actions
+
+It's possible (and easy!) to add an output action for your own
+project. You can also replace the built-in `copy` or `transform`
+actions with this method.
+
+1. Set `plugindir` at the top of your config file, pointing to where
+   you'll keep your action JS files. Path is relative to your project
+   folder.
+2. Write a plugin, here's an example:
+
+```
+var path = require('path'),
+    fs = require('q-io/fs'),
+    globals = {};
+
+exports.name = "copy";
+exports.init = function(globalvars) {
+  globals = globalvars;
+}
+exports.run = function(srcfile, config) {
+  var destname = config("destname"),
+      destdir = config("destdir"),
+      resolved = path.resolve(globals.sitedir, destdir),
+      destpath = path.join(resolved, destname);
+  return fs.makeTree(resolved)
+         .then(fs.copy.bind(fs, srcfile, destpath));
+}
+```
+
+#### name
+
+*String*
+
+The action name you'd use in your config file. The above
+example is the "copy" action.
+
+#### init
+
+*Function*
+*Return value: ignored*
+*Arguments: `Object` with strings (see below)*
+
+Executed at plugin load time. Is passed an object with app
+globals. Currently the only global is `sitedir`, the project top-level
+folder.
+
+#### run
+
+*Function*
+*Return value: promise*
+*Arguments: `String`, `Function` (see below)*
+
+Executed for each output block that specifies your action name. Here's
+where you do whatever you need to do, it's expected that at the end
+you'll return a [promise] for the output block to be written out. You'll
+be supplied with two arguments:
+
+[promise]: http://documentup.com/kriskowal/q/
+
+***`srcfile`***
+
+The full path to the source file. It'll be pointing to a temporary
+location where the unzipped sources are.
+
+***`config`***
+
+This is a closure that will supply you with config settings, whether
+they come from the output block, a kind default, or a type
+default. Any variables in the returned string (if it's a string) will
+be interpolated for you.
+
+As you can see, the above simple example just creates the destination
+path, then copies the source file there. Check out the `transform.js`
+action to see a more involved example.
+
+If you write an action that you think would be widely useful to
+others, shoot me a message / pull request!
 
 ## Copyright & License
 
