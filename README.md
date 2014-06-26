@@ -113,15 +113,8 @@ what you can do.
 
 This section is ***an array*** which allows you to match files based
 on filename or path. Rules are matched in order, so place more generic
-rules below. By "more generic" I mean catch-alls like:
-
-    [**/html]
-
-or
-
-    [**]
-
-Here's an example:
+rules (e.g., catch-alls like `[**/html]` or `[**]`) below. Here's an
+example:
 
         {
             "match": ["**/index.html"],
@@ -284,6 +277,6 @@ Prepends content, at the beginning of the element (inside it).
 
 ## Copyright & License
 
-Copyright (C) 2014, 56 degrees, LLC
+Copyright (C) 2014, 56 degrees LLC
 
 License: MIT
