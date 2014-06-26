@@ -126,8 +126,8 @@ what you can do.
 
 This section is ***an array*** which allows you to match files based
 on filename or path. Rules are matched in order, so place more generic
-rules (e.g., catch-alls like `[**/*html]` or `[**]`) below. Here's an
-example:
+rules (e.g., catch-alls like `[**/*html]` or `[**]`) below. Only the
+first rule to match is used. Here's an example:
 
         {
             "match": ["**/index.html"],
