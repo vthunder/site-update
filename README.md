@@ -331,8 +331,8 @@ example is the "copy" action.
 
 #### init
 
-*Function*
-*Return value: ignored*
+*Function*<br>
+*Return value: ignored*<br>
 *Arguments: `Object` with strings (see below)*
 
 Executed at plugin load time. Is passed an object with app
@@ -341,8 +341,8 @@ folder.
 
 #### run
 
-*Function*
-*Return value: promise*
+*Function*<br>
+*Return value: promise*<br>
 *Arguments: `String`, `Function` (see below)*
 
 Executed for each output block that specifies your action name. Here's
