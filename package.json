@@ -1,0 +1,38 @@
+{
+  "name": "site-update",
+  "version": "0.0.1",
+  "description": "Utility to update site files from an upstream zipfile",
+  "main": "site-update.js",
+  "bin": "site-update.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vthunder/site-update"
+  },
+  "keywords": [
+    "site",
+    "update",
+    "html",
+    "parse",
+    "transform",
+    "webflow"
+  ],
+  "author": "Dan Mills <code@sandmill.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vthunder/site-update/issues"
+  },
+  "homepage": "https://github.com/vthunder/site-update",
+  "dependencies": {
+    "anymatch": "^0.2.0",
+    "cheerio": "^0.17.0",
+    "child-process-promise": "^0.2.0-SNAPSHOT.1389671754086",
+    "interpolate": "^0.1.0",
+    "mime": "^1.2.11",
+    "q": "^1.0.1",
+    "q-io": "^1.11.2",
+    "temp": "^0.8.0"
+  }
+}

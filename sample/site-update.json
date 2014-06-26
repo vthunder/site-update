@@ -1,0 +1,81 @@
+{
+    "type_defaults": {
+        "text/html": {
+            "kind": "view",
+            "destdir": "views",
+            "destname": "{basename}.hbs",
+            "action": "transform",
+            "transform": [],
+            "alt_kinds": {
+                "layout": {
+                    "destdir": "views/layouts"
+                },
+                "partial": {
+                    "destdir": "views/partials"
+                }
+            }
+        },
+        "text/css": {
+            "kind": "stylesheet",
+            "destdir": "client/vendor/upstream/assets/css",
+            "destname": "{fullname}",
+            "action": "copy"
+        },
+        "image/*": {
+            "kind": "image",
+            "destdir": "client/vendor/upstream/assets/images",
+            "destname": "{fullname}",
+            "action": "copy"
+        },
+        "application/javascript": {
+            "kind": "javascript",
+            "destdir": "client/vendor/upstream/assets/js",
+            "destname": "{fullname}",
+            "action": "copy"
+        }
+    },
+    "sources": [
+        {
+            "match": ["**/index.html"],
+            "type": "text/html",
+            "outputs": [
+                {
+                    "kind": "view",
+                    "destdir": "views",
+                    "destname": "webflow-{basename}.hbs",
+                    "action": "transform",
+                    "transform": [
+                        ["remove", "body > .navbar"],
+                        ["remove", "body > .footer"],
+                        ["removeElse", "body > div"]
+                    ]
+                },
+                {
+                    "kind": "partial",
+                    "destname": "navbar.hbs",
+                    "transform": [
+                        ["removeElse", "body > .navbar"]
+                    ]
+                },
+                {
+                    "kind": "partial",
+                    "destname": "footer.hbs",
+                    "transform": [
+                        ["removeElse", "body > .footer"]
+                    ]
+                }
+            ]
+        },
+        {
+            "match": ["**/*.html"],
+            "outputs": [
+                {
+                    "destname": "webflow-{basename}.hbs",
+                    "transform": [
+                        ["removeElse", "body > div"]
+                    ]
+                }
+            ]
+        }
+    ]
+}
