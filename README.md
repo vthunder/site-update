@@ -113,7 +113,7 @@ what you can do.
 
 This section is ***an array*** which allows you to match files based
 on filename or path. Rules are matched in order, so place more generic
-rules (e.g., catch-alls like `[**/html]` or `[**]`) below. Here's an
+rules (e.g., catch-alls like `[**/*html]` or `[**]`) below. Here's an
 example:
 
         {
