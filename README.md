@@ -284,7 +284,7 @@ element, not just once.
 
 Appends content, at the end of the element (inside it).
 
-; prepend
+#### prepend
 
 Prepends content, at the beginning of the element (inside it).
 
