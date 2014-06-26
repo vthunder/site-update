@@ -1,6 +1,6 @@
 # site-update
 
-'''site-update''' is a script that you can configure to take apart a
+`site-update` is a script that you can configure to take apart a
 zipfile with upstream sources for your site (html, css, js, etc), and
 integrate it into your site. This is particularly useful if you
 develop pages using design tools like [Webflow][] but want to host
@@ -8,7 +8,7 @@ them yourself *with modifications*.
 
 If you modify the upstream files (e.g., split pages into reusable
 components), re-importing a newer version is a horrible error-prone
-task. Rather than doing it by hand, '''site-update''' allows you to
+task. Rather than doing it by hand, `site-update` allows you to
 **describe** the changes, so that importing a new zipfile is as easy
 as running the command again. In fact, I have my laptop set-up to
 detect when I download a new zipfile, and it automatically kicks off
@@ -28,12 +28,12 @@ script to find your project's toplevel folder regardless of your
 current directory.
 
 If you do install globally, cd into your project to run
-'''site-update'''.
+`site-update`.
 
 ## Config file
 
 The config file must be at the top-level of your project folder, and
-must be called '''site-update.json'''.
+must be called `site-update.json`.
 
 The config file has two main sections, "type_defaults", which contains
 default actions by file type, and "sources", which lets you override
@@ -60,51 +60,51 @@ a complete example for HTML files:
             }
         },
 
-; text/html
+#### text/html
 
 The property name is the mime type of the file these settings apply
-to. It can be a glob, such as '''image/*''' to set defaults for all
+to. It can be a glob, such as `image/*` to set defaults for all
 images.
 
 Note that since the type defaults are not evaluated in any particular
 order, if two globs that match the same type, there is no guarantee
 which one will be used. However, an exact match will always be tried
-first. e.g., '''image/png''' will be attempted before '''image/*''' is
+first. e.g., `image/png` will be attempted before `image/*` is
 matched.
 
-; kind & alt_kinds
+#### kind & alt_kinds
 
 'Kinds' allow you to specify multiple variants of a default. For HTML
 files, a good example is (as above) views, layouts, and partials. All
 are essentially the same, and are split from the same HTML files--but
 each gets placed into its own folder.
 
-In this example, only '''destdir''' is being overridden, but each
-'''alt_kind''' section may override any of the defaults.
+In this example, only `destdir` is being overridden, but each
+`alt_kind` section may override any of the defaults.
 
-; destdir
+#### destdir
 
 Where you want files to end up, relative to the top of your project.
 
-; destname
+#### destname
 
 What you want files to be named. The example above uses a variable
 that gets substituted for the file being processed. See the
 Substitution Variables section below for a complete list.
 
-; action
+#### action
 
-What you want '''site-update''' to do. There are currently only two values:
+What you want `site-update` to do. There are currently only two values:
 
-* '''copy''': copies the file as-is.
-* '''transform''': parses the file as HTML and runs transform rules
+* `copy`: copies the file as-is.
+* `transform`: parses the file as HTML and runs transform rules
   before writing out the file.
 
-; transform
+#### transform
 
 Array containing transform rules to be applied on HTML files before
-writing them out. Only applies when '''action''' is set to
-'''transform'''.
+writing them out. Only applies when `action` is set to
+`transform`.
 
 See Transform Actions below for more information on the format and
 what you can do.
@@ -113,8 +113,15 @@ what you can do.
 
 This section is ***an array*** which allows you to match files based
 on filename or path. Rules are matched in order, so place more generic
-rules (e.g. catch-alls like '''[**/html]''' or '''[**]''')
-below. Here's an example:
+rules below. By "more generic" I mean catch-alls like:
+
+    [**/html]
+
+or
+
+    [**]
+
+Here's an example:
 
         {
             "match": ["**/index.html"],
@@ -140,21 +147,22 @@ below. Here's an example:
                 }
         }
 
-; match
+#### match
 
 An anymatch expression to match the file(s) you wish to act on. In
 this case, it will match 'index.html'.
 
-; type
+#### type
+
 *optional*
 
 Allows overriding the default mime type for a file.
 
-; outputs
+#### outputs
 
 An array of objects, each corresponding to a file being output. In
 this case, index.html is being split into two files:
-'''webflow-index.hbs''' (a view), and '''navbar.hbs''' (a
+`webflow-index.hbs` (a view), and `navbar.hbs` (a
 partial). You can split an input file into as many files as you wish.
 
 Each object has the same options that type defaults have, see Type
@@ -166,23 +174,23 @@ Config settings are allowed to contain a few variables which get
 substituted. This is useful for setting defaults that apply to several
 files. Current set of variables is:
 
-; fullname
+#### fullname
 
 The full filename (without the path). For example, given the file
-'''/foo/bar/index.html''', the {fullname} variable will expand to
-'''index.html'''.
+`/foo/bar/index.html`, the {fullname} variable will expand to
+`index.html`.
 
-; extname
+#### extname
 
 The file extension, with leading dot. For example, given the file
-'''/foo/bar/index.html''', the {extname} variable will expand to
-'''.html'''.
+`/foo/bar/index.html`, the {extname} variable will expand to
+`.html`.
 
-; basename
+#### basename
 
 The filename minus the extension. For example, given the file
-'''/foo/bar/index.html''', the {basename} variable will expand to
-'''index'''.
+`/foo/bar/index.html`, the {basename} variable will expand to
+`index`.
 
 ### Transform Actions
 
@@ -198,7 +206,7 @@ Rules are arrays with two or three items:
 2. Selector to act on
 3. (Optionally) Additional data
 
-Perhaps some examples will make it clear. From the '''index.html'''
+Perhaps some examples will make it clear. From the `index.html`
 example above:
 
                     "transform": [
@@ -209,9 +217,9 @@ example above:
 
 These rules do the following:
 
-1. Remove element(s) with the '''navbar''' class that are inside '''body'''.
-2. Remove element(s) with the '''footer''' class that are inside '''body'''.
-3. Keep '''div''' elements currently inside '''body''', but delete everything else.
+1. Remove element(s) with the `navbar` class that are inside `body`.
+2. Remove element(s) with the `footer` class that are inside `body`.
+3. Keep `div` elements currently inside `body`, but delete everything else.
 
 So if you started with something like:
 
@@ -239,28 +247,34 @@ In addition to removal, you can also add and replace content. In that
 case, the transform array needs a third item, which is the content to
 add.
 
+I find it particularly useful to replace elements with partial
+includes. For example, split scripts into a separate file called
+`upstream-scripts.hbs`, then replace them with `{{>
+scripts}}`. Then I can maintain `scripts.hbs` myself, and
+include `upstream-scripts` or not as I wish.
+
 Here's what's currently implemented:
 
-; remove
+#### remove
 
 Removes matched elements.
 
-; removeElse
+#### removeElse
 
 Keeps only the matched elements (removes everything else).
 
-; empty
+#### empty
 
 Keeps the matched elements, but empties out their contents.
 
-; replace
+#### replace
 
 Replaces the matched elements with the given content.
 
 Note that the replacement content will be added for each matched
 element, not just once.
 
-; append
+#### append
 
 Appends content, at the end of the element (inside it).
 
