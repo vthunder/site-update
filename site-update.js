@@ -3,6 +3,7 @@
 var sitedir = undefined,
     config = undefined,
     zipfile = process.argv[2],
+    actions = {},
     interpolate = require('interpolate'),
     path = require('path'),
     anymatch = require('anymatch'),
@@ -10,8 +11,7 @@ var sitedir = undefined,
     fs = require('q-io/fs'),
     mime = require('mime'),
     temp = require('temp').track(),
-    exec = require('child-process-promise').exec,
-    cheerio = require('cheerio');
+    exec = require('child-process-promise').exec;
 
 function findTopLevel() {
   return Q.all([fs.exists(path.join(process.cwd(), "site-update.json")),
@@ -34,6 +34,25 @@ function findTopLevel() {
          });
 }
 
+function loadActions() {
+  var builtin = path.resolve(__dirname, "lib/actions");
+  var user = config.plugindir?
+    path.resolve(sitedir, config.plugindir) : undefined;
+  var load = function(dir, files) {
+    if (dir) {
+      files.forEach(function(file) {
+        var action = require(path.join(dir, file));
+        action.init({sitedir: sitedir});
+        actions[action.name] = action;
+      });
+    }
+  };
+  return fs.list(builtin)
+         .then(load.bind(null, builtin))
+         .then(fs.list.bind(fs, user))
+         .then(load.bind(null, user));
+}
+
 function run() {
   fs.exists(zipfile)
   .then(function(exists) {
@@ -43,6 +62,7 @@ function run() {
     }
   })
   .then(findTopLevel)
+  .then(loadActions)
   .then(tmpUnzip.bind(null, zipfile))
   .spread(function(tmpdir, zipResult) {
     return fs.listTree(tmpdir, function(file, stat) {
@@ -121,7 +141,7 @@ function processFile(file) {
     var configs = [outputConfig, kindConfig, typeDefaults];
 
     // finally! ready to go
-    promises.push(processFileOutput(file, configs));
+    promises.push(runOutputAction(file, configs));
   });
 
   return Q.all(promises);
@@ -135,67 +155,23 @@ function searchAndInterpolate(searchObjects, interpolationVars, searchKey) {
   return value;
 }
 
-function processFileOutput(file, configs) {
+function runOutputAction(file, configs) {
   var stringvars = {
     sitedir: sitedir,
     fullname: path.basename(file),
     extname: path.extname(file),
     basename: path.basename(file, path.extname(file))
   };
-  var get = searchAndInterpolate.bind(null, configs, stringvars),
-      destname = get("destname"),
-      destpath = path.join(path.join(sitedir, get("destdir")), destname);
+  var configLookup = searchAndInterpolate.bind(null, configs, stringvars),
+      destname = configLookup("destname"),
+      action = actions[configLookup("action")];
 
-  console.log("  ->", destname);
-
-  switch (get("action")) {
-  case "copy":
-    return fs.makeTree(path.join(sitedir, get("destdir")))
-           .then(fs.copy.bind(fs, file, destpath));
-    break;
-  case "transform":
-    return fs.read(file)
-           .then(transformHtml.bind(null, get, destpath));
-    break;
+  if (!action) {
+    throw new Error("Unknown action '" + configLookup("action"));
   }
 
-  throw new Error("Unknown action '" + get("action") + "' for file: " + file);
-}
-
-function transformHtml(get, destpath, content) {
-  var $ = cheerio.load(content);
-
-  get("transform").forEach(function(transform) {
-    var change = transform[0],
-        selector = transform[1],
-        data = transform[2];
-    switch (change) {
-    case "remove":
-      $(selector).remove();
-      break;
-    case "removeElse":
-      var keep = $.html(selector);
-      $ = cheerio.load(keep);
-      break;
-    case "empty":
-      $(selector).empty();
-      break;
-    case "replace":
-      $(selector).replaceWith(data);
-      break;
-    case "append":
-      $(selector).append(data);
-      break;
-    case "prepend":
-      $(selector).prepend(data);
-      break;
-    default:
-      throw new Error("Unknown html transform: " + change)
-    }
-  });
-
-  return fs.makeTree(path.join(sitedir, get("destdir")))
-         .then(fs.write.bind(fs, destpath, $.html()));
+  console.log("  ->", destname);
+  return action.run(file, configLookup);
 }
 
 function tmpUnzip(zip) {
