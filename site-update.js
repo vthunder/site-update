@@ -76,7 +76,9 @@ function run() {
       promises.push(processFile(file));
     });
   })
-  .then(console.log.bind(console, "All done!"))
+  .then(function() {
+    console.log("All done!");
+  })
   .fail(function(error) {
     console.log("Error: ", error.message, error.stack);
   })
