@@ -254,8 +254,8 @@ You would end up with:
 Neat!
 
 In addition to removal, you can also add and replace content. In that
-case, the transform array needs a third item, which is the content to
-add.
+case, the transform array needs a third or fourth item, depending on
+the specific change. See below for a list.
 
 I find it particularly useful to replace elements with partial
 includes. For example, split scripts into a separate file called
@@ -263,34 +263,43 @@ includes. For example, split scripts into a separate file called
 scripts}}`. Then I can maintain `scripts.hbs` myself, and
 include `upstream-scripts` or not as I wish.
 
-Here's what's currently implemented:
+Below are the Cheerio methods currently implemented. Check the
+[Cheerio][] docs for details about each one. Note that we only support
+methods that change the DOM, not the ones that extract data or test
+values (since that wouldn't make any sense in thei context).
 
-#### remove
+#### Methods that take no arguments (`["selector", "method"]`)
 
-Removes matched elements.
+* remove
+* empty
+* val
 
-#### removeElse
+#### Methods that take one argument (`["selector", "method", "arg1"]`)
 
-Keeps only the matched elements (removes everything else).
+* removeAttr
+* removeClass
+* append
+* prepend
+* after
+* before
+* replaceWith
+* html
+* text
 
-#### empty
+#### Methods that take two arguments (`["selector", "method", "arg1", "arg2"]`)
 
-Keeps the matched elements, but empties out their contents.
+* attr
+* data
+* toggleClass
+* css
 
-#### replace
+#### Additional methods
 
-Replaces the matched elements with the given content.
+* removeElse
 
-Note that the replacement content will be added for each matched
-element, not just once.
-
-#### append
-
-Appends content, at the end of the element (inside it).
-
-#### prepend
-
-Prepends content, at the beginning of the element (inside it).
+This will remove everything *other* than the matched elements. You can
+see it in action in the example above. Great for pulling out a chunk
+of a document and saving it as a partial.
 
 ## User-Defined Actions
 
