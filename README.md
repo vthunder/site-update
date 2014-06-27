@@ -107,9 +107,10 @@ Substitution Variables section below for a complete list.
 
 #### action
 
-What you want `site-update` to do. There are two built-in possible
+What you want `site-update` to do. There are three built-in possible
 values:
 
+* `ignore`: does nothing.
 * `copy`: copies the file as-is.
 * `transform`: parses the file as HTML and runs transform rules
   before writing out the file.
@@ -143,16 +144,16 @@ first rule to match is used. Here's an example:
                     "destname": "webflow-{basename}.hbs",
                     "action": "transform",
                     "transform": [
-                        ["remove", "body > .navbar"],
-                        ["remove", "body > .footer"],
-                        ["removeElse", "body > div"]
+                        ["body > .navbar", "remove"],
+                        ["body > .footer", "remove"],
+                        ["body > div", "removeElse"]
                     ]
                 },
                 {
                     "kind": "partial",
                     "destname": "navbar.hbs",
                     "transform": [
-                        ["removeElse", "body > .navbar"]
+                        ["body > .navbar", "removeElse"]
                     ]
                 }
         }
@@ -177,6 +178,11 @@ partial). You can split an input file into as many files as you wish.
 
 Each object has the same options that type defaults have, see Type
 Defaults above for more information on each one.
+
+You can declare an empty outputs section to ignore matched files, even
+though the type defaults might specify to copy or transform
+it. However, a better way to achieve this is to set `action` to
+`ignore`, bypassing the `transform` action altogether.
 
 ### Substitution Variables
 
@@ -220,9 +226,9 @@ Perhaps some examples will make it clear. From the `index.html`
 example above:
 
                     "transform": [
-                        ["remove", "body > .navbar"],
-                        ["remove", "body > .footer"],
-                        ["removeElse", "body > div"]
+                        ["body > .navbar", "remove"],
+                        ["body > .footer", "remove"],
+                        ["body > div", "removeElse"]
                     ]
 
 These rules do the following:
@@ -255,13 +261,49 @@ Neat!
 
 In addition to removal, you can also add and replace content. In that
 case, the transform array needs a third or fourth item, depending on
-the specific change. See below for a list.
+the specific change. The additional item can be a string with the
+content to be added, or an array of strings, each to be written out as
+a separate line.
 
 I find it particularly useful to replace elements with partial
 includes. For example, split scripts into a separate file called
 `upstream-scripts.hbs`, then replace them with `{{>
 scripts}}`. Then I can maintain `scripts.hbs` myself, and
 include `upstream-scripts` or not as I wish.
+
+Here's an example that uses the multiline syntax:
+
+                {
+                    "kind": "layout",
+                    "destname": "webflow-layout.hbs",
+                    "transform": [
+                        ["body", "text", [
+                            "",
+                            "{{> navbar }}",
+                            "{{{ body }}}",
+                            "{{> footer }}",
+                            "{{> endscripts }}",
+                            ""]]
+                    ]
+                },
+
+This output rule keeps everything outside `<body>` intact, but
+replaces the contents of `<body>` with
+
+                            {{> navbar }}
+                            {{{ body }}}
+                            {{> footer }}
+                            {{> endscripts }}
+
+The additional empty strings at the beginning and end of the array are
+extra newlines just for stylistic purposes, to avoid
+
+                            <body>{{> navbar }}
+                            {{{ body }}}
+                            {{> footer }}
+                            {{> endscripts }}</body>
+
+You may of course omit them if you wish.
 
 Below are the Cheerio methods currently implemented. Check the
 [Cheerio][] docs for details about each one. Note that we only support
