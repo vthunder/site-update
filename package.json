@@ -1,6 +1,6 @@
 {
   "name": "site-update",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Utility to update site files from an upstream zipfile",
   "main": "site-update.js",
   "bin": "site-update.js",
