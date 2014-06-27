@@ -40,28 +40,37 @@
             "type": "text/html",
             "outputs": [
                 {
-                    "kind": "view",
-                    "destdir": "views",
-                    "destname": "webflow-{basename}.hbs",
-                    "action": "transform",
+                    "kind": "layout",
+                    "destname": "webflow-layout.hbs",
                     "transform": [
-                        ["remove", "body > .navbar"],
-                        ["remove", "body > .footer"],
-                        ["removeElse", "body > div"]
+                        ["body", "text", [
+                            "",
+                            "{{> navbar }}",
+                            "{{{ body }}}",
+                            "{{> footer }}",
+                            "{{> endscripts }}",
+                            ""]]
+                    ]
+                },
+                {
+                    "transform": [
+                        ["body > .navbar", "remove"],
+                        ["body > .footer", "remove"],
+                        ["body > div", "removeElse"]
                     ]
                 },
                 {
                     "kind": "partial",
                     "destname": "navbar.hbs",
                     "transform": [
-                        ["removeElse", "body > .navbar"]
+                        ["body > .navbar", "removeElse"]
                     ]
                 },
                 {
                     "kind": "partial",
                     "destname": "footer.hbs",
                     "transform": [
-                        ["removeElse", "body > .footer"]
+                        ["body > .footer", "removeElse"]
                     ]
                 }
             ]
@@ -72,7 +81,7 @@
                 {
                     "destname": "webflow-{basename}.hbs",
                     "transform": [
-                        ["removeElse", "body > div"]
+                        ["body > div", "removeElse"]
                     ]
                 }
             ]
