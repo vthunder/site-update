@@ -268,13 +268,17 @@ Below are the Cheerio methods currently implemented. Check the
 methods that change the DOM, not the ones that extract data or test
 values (since that wouldn't make any sense in thei context).
 
-#### Methods that take no arguments (`["selector", "method"]`)
+#### Methods that take no arguments
+
+`["selector", "method"]`
 
 * remove
 * empty
 * val
 
-#### Methods that take one argument (`["selector", "method", "arg1"]`)
+#### Methods that take one argument
+
+`["selector", "method", "arg1"]`
 
 * removeAttr
 * removeClass
@@ -286,7 +290,9 @@ values (since that wouldn't make any sense in thei context).
 * html
 * text
 
-#### Methods that take two arguments (`["selector", "method", "arg1", "arg2"]`)
+#### Methods that take two arguments
+
+`["selector", "method", "arg1", "arg2"]`
 
 * attr
 * data
