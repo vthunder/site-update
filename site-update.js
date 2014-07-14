@@ -49,8 +49,13 @@ function loadActions() {
   };
   return fs.list(builtin)
          .then(load.bind(null, builtin))
-         .then(fs.list.bind(fs, user))
-         .then(load.bind(null, user));
+         .then(function() {
+           if (user) {
+             return fs.list(user)
+                    .then(load.bind(null, user));
+           }
+           return undefined;
+         });
 }
 
 function run() {
