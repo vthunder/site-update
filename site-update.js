@@ -80,6 +80,7 @@ function run() {
     files.forEach(function(file) {
       promises.push(processFile(file));
     });
+    return Q.all(promises);
   })
   .then(function() {
     console.log("All done!");

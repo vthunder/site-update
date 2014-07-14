@@ -310,9 +310,11 @@ extra newlines just for stylistic purposes, to avoid
 You may of course omit them if you wish.
 
 Below are the Cheerio methods currently implemented. Check the
-[Cheerio][] docs for details about each one. Note that we only support
-methods that change the DOM, not the ones that extract data or test
-values (since that wouldn't make any sense in thei context).
+[Cheerio][] docs for details about each one (except for a few
+additional methods which aren't part of cheerio--those have a
+description here). Note that we only support methods that change the
+DOM, not the ones that extract data or test values (since that
+wouldn't make any sense in thei context).
 
 #### Methods that take no arguments
 
@@ -321,6 +323,14 @@ values (since that wouldn't make any sense in thei context).
 * remove
 * empty
 * val
+
+Not part of Cheerio API:
+
+* removeElse
+
+This will remove everything *other* than the matched elements. You can
+see it in action in the example above. Great for pulling out a chunk
+of a document and saving it as a partial.
 
 #### Methods that take one argument
 
@@ -336,6 +346,20 @@ values (since that wouldn't make any sense in thei context).
 * html
 * text
 
+Not part of Cheerio API:
+
+* copyTo
+
+Copies anything matched by selector into arg1, which must be a
+selector (string) reprensenting the destination. If arg1 matches
+multiple elements, all of them will have the matched content copied
+into them.
+
+* copyTo
+
+Convenience method. Exactly like copyTo, but also runs remove() on the
+source selector.
+
 #### Methods that take two arguments
 
 `["selector", "method", "arg1", "arg2"]`
@@ -344,14 +368,6 @@ values (since that wouldn't make any sense in thei context).
 * data
 * toggleClass
 * css
-
-#### Additional methods
-
-* removeElse
-
-This will remove everything *other* than the matched elements. You can
-see it in action in the example above. Great for pulling out a chunk
-of a document and saving it as a partial.
 
 ## User-Defined Actions
 
