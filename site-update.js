@@ -143,7 +143,7 @@ function processFile(file) {
     if (typeDefaults.alt_kinds && typeDefaults.alt_kinds[kind]) {
       kindConfig = typeDefaults.alt_kinds[kind];
     }
-    var configs = [outputConfig, kindConfig, typeDefaults];
+    var configs = [outputConfig, fileConfig, kindConfig, typeDefaults];
 
     // finally! ready to go
     promises.push(runOutputAction(file, configs));
@@ -168,14 +168,12 @@ function runOutputAction(file, configs) {
     basename: path.basename(file, path.extname(file))
   };
   var configLookup = searchAndInterpolate.bind(null, configs, stringvars),
-      destname = configLookup("destname"),
       action = actions[configLookup("action")];
 
   if (!action) {
     throw new Error("Unknown action '" + configLookup("action"));
   }
 
-  console.log("  ->", destname);
   return action.run(file, configLookup);
 }
 

@@ -130,13 +130,16 @@ what you can do.
 ### Sources
 
 This section is ***an array*** which allows you to match files based
-on filename or path. Rules are matched in order, so place more generic
-rules (e.g., catch-alls like `[**/*html]` or `[**]`) below. Only the
-first rule to match is used. Here's an example:
+on filename or path. Rules are matched in order and only the first
+rule to match is used, so place more generic rules (e.g., catch-alls
+like `[**/*html]` or `[**]`) below more specific rules. Each rule can
+override any settings in the type defaults for that file. Here's an
+example:
 
         {
             "match": ["**/index.html"],
             "type": "text/html",
+            "action": "transform",
             "outputs": [
                 {
                     "kind": "view",
@@ -167,7 +170,8 @@ this case, it will match 'index.html'.
 
 *optional*
 
-Allows overriding the default mime type for a file.
+Allows overriding the default mime type for a file, causing a
+different set of type defaults to be used.
 
 #### outputs
 
