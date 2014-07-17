@@ -107,7 +107,7 @@ function processFile(file) {
     fileConfig = fileConfig[0];
   }
 
-  if (Object.keys(fileConfig).length > 0 && !fileConfig.outputs) {
+  if (fileConfig.action == "ignore") {
     // File is to be ignored, return immediately.
     return true;
   }
@@ -153,23 +153,26 @@ function processFile(file) {
   return Q.all(promises);
 }
 
-function searchAndInterpolate(searchObjects, interpolationVars, searchKey) {
+function searchAndInterpolate(searchObjects, interpolator, searchKey) {
   var value = objSearch(searchObjects, searchKey);
   if (typeof(value) == "string") {
-    value = interpolate(value, interpolationVars);
+    value = interpolator(value);
   }
   return value;
 }
 
 function runOutputAction(file, configs) {
-  var stringvars = {
-    sitedir: sitedir,
-    fullname: path.basename(file),
-    extname: path.extname(file),
-    basename: path.basename(file, path.extname(file))
-  };
-  var configLookup = searchAndInterpolate.bind(null, configs, stringvars),
-      action = actions[configLookup("action")];
+  var interpolator = function(value) {
+    return interpolate(value, {
+      sitedir: sitedir,
+      fullname: path.basename(file),
+      extname: path.extname(file),
+      basename: path.basename(file, path.extname(file))
+    });
+  }
+  var configLookup = searchAndInterpolate.bind(null, configs, interpolator);
+  configLookup.interpolate = interpolator;
+  var action = actions[configLookup("action")];
 
   if (!action) {
     throw new Error("Unknown action '" + configLookup("action"));
