@@ -441,6 +441,15 @@ they come from the output block, a kind default, or a type
 default. Any variables in the returned string (if it's a string) will
 be interpolated for you.
 
+If you want to interpolate a string of your choosing, you can get
+access to the interpolator function:
+
+```
+var interpolated = config.interpolate(some_string);
+```
+
+(where `config` is the second argument to the `run` function).
+
 As you can see, the above simple example just creates the destination
 path, then copies the source file there. Check out the `transform.js`
 action to see a more involved example.
